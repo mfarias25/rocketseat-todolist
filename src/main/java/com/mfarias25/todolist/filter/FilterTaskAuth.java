@@ -24,38 +24,40 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        var servletPath = request.getServletPath();
+        if (servletPath.equals("/tasks/")) {
+            //Pegar a autenticação(usuario e senha)
+            var authorization = request.getHeader("Authorization");
 
-        //Pegar a autenticação(usuario e senha)
-        var authorization = request.getHeader("Authorization");
+            var authEncoded = authorization.substring("Basic".length()).trim(); //subtring = int unico ou dois ints. Pege Basica e calcule qual o length, tira os caracteres e espaços
 
-        var authEncoded = authorization.substring("Basic".length()).trim(); //subtring = int unico ou dois ints. Pege Basica e calcule qual o length, tira os caracteres e espaços
+            byte[] authDecoded = Base64.getDecoder().decode(authEncoded); //Decode converter/converter um array de bytes
 
-        byte[] authDecoded = Base64.getDecoder().decode(authEncoded); //Decode converter/converter um array de bytes
+            var authString = new String(authDecoded);
 
-        var authString = new String(authDecoded);
+            // 0 -> ["farias3"], 1 -> ["999333222"]
+            String[] credentials = authString.split(":");
+            String username = credentials[0];
+            String password = credentials[1];
+            //System.out.println("Authorization: " +"Username: "+ username + " " + "Password: " + password);
 
-        // 0 -> ["farias3"], 1 -> ["999333222"]
-        String[] credentials = authString.split(":");
-        String username = credentials[0];
-        String password = credentials[1];
-        //System.out.println("Authorization: " +"Username: "+ username + " " + "Password: " + password);
-
-        //Validar usuario
-        var user = this.userRepository.findByUsername(username);
-        if (user == null) {
-            response.sendError(401);
-        } else {
-            //Validar senha
-            var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
-            if (passwordVerify.verified) {
-                filterChain.doFilter(request, response);
-            }else {
+            //Validar usuario
+            var user = this.userRepository.findByUsername(username);
+            if (user == null) {
                 response.sendError(401);
+            } else {
+
+                //Validar senha
+                var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
+                if (passwordVerify.verified) {
+                    filterChain.doFilter(request, response);
+                } else {
+                    response.sendError(401);
+                }
+                //Tudo ok, segue!
             }
-            //Tudo ok, segue!
-
+        }else {
+            filterChain.doFilter(request, response);
         }
-
-
     }
 }
