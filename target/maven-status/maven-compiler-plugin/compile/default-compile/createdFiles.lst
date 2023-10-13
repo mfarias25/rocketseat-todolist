@@ -1,0 +1,10 @@
+com\mfarias25\todolist\utils\Utils.class
+com\mfarias25\todolist\task\TaskRepository.class
+com\mfarias25\todolist\user\UserController.class
+com\mfarias25\todolist\TodolistApplication.class
+com\mfarias25\todolist\user\UserRepository.class
+com\mfarias25\todolist\task\TaskModel.class
+com\mfarias25\todolist\task\TaskController.class
+com\mfarias25\todolist\user\UserModel.class
+com\mfarias25\todolist\errors\ExceptionHandlerController.class
+com\mfarias25\todolist\filter\FilterTaskAuth.class
