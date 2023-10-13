@@ -22,7 +22,7 @@
 - Injeção de Dependências
 - Validação de usuário e senha
 - Tratamento de respostas de erro
-- Métodos CREATE, GET e PUT
+- Métodos POST, GET e PUT
 - Deploy RENDER
 
 
